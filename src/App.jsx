@@ -1,5 +1,6 @@
 import Header from './components/Header';
 import Game from './components/Game';
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -7,6 +8,8 @@ function App() {
       <Header />
 
       <Game />
+
+      <Footer />
     </div>
   );
 }
