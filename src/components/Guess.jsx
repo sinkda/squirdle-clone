@@ -54,8 +54,8 @@ class Guess extends React.Component
                 <div className="text-xs grid grid-cols-2 p-1">
                     <div><span className="font-semibold">Gen:</span> {pokedex[value][0]}</div>
                     <div><span className="font-semibold">Type:</span> {pokedex[value][1]} / {(pokedex[value][2] !== '') ? pokedex[value][2] : 'None'}</div>
-                    <div><span className="font-semibold">Height:</span> {pokedex[value][3]}</div>
-                    <div><span className="font-semibold">Weight:</span> {pokedex[value][4]}</div>
+                    <div><span className="font-semibold">Height:</span> {pokedex[value][3]}m</div>
+                    <div><span className="font-semibold">Weight:</span> {pokedex[value][4]}kg</div>
                 </div>
             </div>
             );

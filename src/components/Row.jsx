@@ -1,4 +1,5 @@
 import React from 'react';
+import Title from './Title';
 
 class Row extends React.Component
 {
@@ -26,10 +27,12 @@ class Row extends React.Component
         }
     
         return (<div className="flex flex-col">
-            <div className="flex justify-center text-white text-xl">{this.props.header}</div>
+            
             <div className="flex flex-row">
                 { row }
             </div>
+
+            <Title header={this.props.header} pokemon={this.props.pokemon} />
         </div>);
     }
 }

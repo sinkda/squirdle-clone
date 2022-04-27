@@ -56,8 +56,6 @@ class Game extends React.Component
         let pokemon = pokedex[guess];
         let layoutString = this.calculateGuessLayout(pokemon);
 
-        console.log(pokemon);
-
         let rows = this.state.rows;
         rows.push(<Row layout={layoutString} key={this.state.currentGuess} header={guess} pokemon={pokemon} />)
         this.setState({
