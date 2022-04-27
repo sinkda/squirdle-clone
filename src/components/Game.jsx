@@ -40,7 +40,7 @@ class Game extends React.Component
         })
 
         // handle win condition
-        if(guess == this.state.pokemon[0])
+        if(guess === this.state.pokemon[0])
         {
             let rows = this.state.rows;
             rows.push(<Row layout='ccccc' key={this.state.currentGuess} header={guess} />)
@@ -59,13 +59,13 @@ class Game extends React.Component
         console.log(pokemon);
 
         let rows = this.state.rows;
-        rows.push(<Row layout={layoutString} key={this.state.currentGuess} header={guess} />)
+        rows.push(<Row layout={layoutString} key={this.state.currentGuess} header={guess} pokemon={pokemon} />)
         this.setState({
             rows: rows
         });
 
         // see if that was our last guess
-        if(this.state.currentGuess == this.maxGuesses)
+        if(this.state.currentGuess === this.maxGuesses)
             this.handleLoseCondition();
 
     }
@@ -86,7 +86,7 @@ class Game extends React.Component
     {
         let gen = this.state.pokemon[1][0];
 
-        if(gen == guess)
+        if(gen === guess)
             return 'c';
         else if(gen > guess)
             return 'u';
@@ -102,17 +102,17 @@ class Game extends React.Component
         let layoutString = '';
 
         // find for type1
-        if(type1 == pokemonType1)
+        if(type1 === pokemonType1)
             layoutString += 'c';
-        else if(type1 == pokemonType2)
+        else if(type1 === pokemonType2)
             layoutString += 'p';
         else
             layoutString += 'w';
 
         // find for type2
-        if(type2 == pokemonType2)
+        if(type2 === pokemonType2)
             layoutString += 'c';
-        else if(type2 == pokemonType1)
+        else if(type2 === pokemonType1)
             layoutString += 'p';
         else
             layoutString += 'w';
@@ -124,7 +124,7 @@ class Game extends React.Component
     {
         let pokemonHeight = this.state.pokemon[1][3];
 
-        if(pokemonHeight == height)
+        if(pokemonHeight === height)
             return 'c';
         else if(pokemonHeight > height)
             return 'u';
@@ -136,7 +136,7 @@ class Game extends React.Component
     {
         let pokemonWeight = this.state.pokemon[1][4];
 
-        if(pokemonWeight == weight)
+        if(pokemonWeight === weight)
             return 'c';
         else if(pokemonWeight > weight)
             return 'u';
@@ -164,7 +164,7 @@ class Game extends React.Component
                     <span className="text-center w-full">Type 1</span>
                     <span className="text-center w-full">Type 2</span>
                     <span className="text-center w-full">Height</span>
-                    <span className="text-center w-full">Width</span>
+                    <span className="text-center w-full">Weight</span>
                 </div>
                 
                 <div>
