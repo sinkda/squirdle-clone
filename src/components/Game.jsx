@@ -10,6 +10,8 @@ class Game extends React.Component
         super(props);
 
         this.startNewGame = this.startNewGame.bind(this);
+        this.buildFromLocal = this.buildFromLocal.bind(this);
+        this.rebuildRows = this.rebuildRows.bind(this);
         this.handleGuess = this.handleGuess.bind(this);
         this.handleWinCondition = this.handleWinCondition.bind(this);
         this.handleLoseCondition = this.handleLoseCondition.bind(this);
@@ -27,12 +29,14 @@ class Game extends React.Component
     }
 
     componentDidMount() {
-        this.startNewGame();
+        if(localStorage.getItem('playing') === 'true')
+            this.buildFromLocal();
+        else
+            this.startNewGame();
     }
 
     startNewGame()
     {
-
         let length = Object.keys(pokedex).length;
         let random = parseInt(Math.random() * length);
         let name = Object.keys(pokedex)[random];
@@ -45,14 +49,46 @@ class Game extends React.Component
             playing: this.defaultState.playing
         });
 
+        localStorage.setItem('playing', 'true');
+        localStorage.setItem('pokemon', JSON.stringify([name, pick]));
+        localStorage.setItem('currentGuess', 1);
+        localStorage.setItem('rows', JSON.stringify([]));
+    }
 
+    buildFromLocal()
+    {
+        let rows = this.rebuildRows();
+
+        this.setState({
+            pokemon: JSON.parse(localStorage.getItem('pokemon')),
+            rows: rows,
+            currentGuess: parseInt(localStorage.getItem('currentGuess')),
+            playing: this.defaultState.playing
+        });
+    }
+
+    rebuildRows()
+    {
+        let rows = JSON.parse(localStorage.getItem('rows'));
+
+        let rebuild = [];
+        rows.forEach((element, index) => {
+            let component = (<Row layout={element[0]} key={index} header={element[1]} pokemon={element[2]} />);
+            rebuild.push(component);
+        });
+
+        return rebuild;
     }
 
     handleGuess(guess)
     {
+        let newGuessCount = this.state.currentGuess + 1;
+
         this.setState({
-            currentGuess: this.state.currentGuess + 1
+            currentGuess: newGuessCount
         })
+
+        localStorage.setItem('currentGuess', newGuessCount);
 
         // handle win condition
         if(guess === this.state.pokemon[0])
@@ -77,10 +113,20 @@ class Game extends React.Component
             rows: rows
         });
 
+        this.addRowToLocal(layoutString, guess, pokemon);
+
         // see if that was our last guess
         if(this.state.currentGuess === this.maxGuesses)
             this.handleLoseCondition();
+    }
 
+    addRowToLocal(layout, guess, pokemon)
+    {
+        let currentRows = JSON.parse(localStorage.getItem('rows'));
+
+        currentRows.push([layout, guess, pokemon]);
+
+        localStorage.setItem('rows', JSON.stringify(currentRows));
     }
 
     calculateGuessLayout(guess)
@@ -160,8 +206,10 @@ class Game extends React.Component
     handleWinCondition()
     {
         this.setState({
-            playing: (<Finale status='win' pokemon={this.state.pokemon} />)
+            playing: (<Finale status='win' pokemon={this.state.pokemon} newGame={this.startNewGame}/>)
         });
+
+        localStorage.setItem('playing', false);
     }
 
     handleLoseCondition()
@@ -169,6 +217,8 @@ class Game extends React.Component
         this.setState({
             playing: (<Finale status='lose' pokemon={this.state.pokemon} newGame={this.startNewGame} />)
         });
+
+        localStorage.setItem('playing', false);
     }
 
 
