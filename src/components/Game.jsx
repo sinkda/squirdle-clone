@@ -156,8 +156,12 @@ class Game extends React.Component
     render() {
 
         return (
-            <div className="flex flex-col items-center justify-center mt-8 w-fit">
-                <div className="grid grid-flow-col w-full text-blue-200">
+            <div className="flex flex-col flex-1 items-center justify-start mt-3 w-fit">
+                <div>
+                    <Guess handleGuess={this.handleGuess} />
+                </div>
+
+                <div className="grid grid-flow-col w-full text-blue-200 mt-6">
                     <span className="text-center w-full">Gen</span>
                     <span className="text-center w-full">Type 1</span>
                     <span className="text-center w-full">Type 2</span>
@@ -169,9 +173,7 @@ class Game extends React.Component
                     { this.state.rows }
                 </div>
 
-                <div>
-                    <Guess handleGuess={this.handleGuess} />
-                </div>
+                
             </div>
             );
     }
