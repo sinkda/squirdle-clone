@@ -1,11 +1,8 @@
-// import Row from './Row';
 import pokedex from '../assets/pokedex.json';
 import React from 'react';
 import Row from './Row';
 import Guess from './Guess';
 import Finale from './Finale';
-import { toHaveAccessibleDescription } from '@testing-library/jest-dom/dist/matchers';
-
 
 class Game extends React.Component
 {
