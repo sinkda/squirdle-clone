@@ -89,7 +89,7 @@ class Guess extends React.Component
         return (
             <div>
                 <div className="mt-6">
-                    <label htmlFor="guess" className="text-blue-200 text-lg">Guess a Pokemon</label>
+                    <label htmlFor="guess" className="text-blue-200 text-lg block text-center">Guess a Pokemon</label>
                     <div className="flex flex-row items-center w-full h-full mt-2">
                         <input type="text" onKeyDown={this.handleKeyPress} className={`p-2 ${this.state.outlineErrorState} transition duration-200 ease-in-out`} 
                             name="guess" ref={this.inputRef} placeholder="Who's That Pokemon?" autoComplete="off"/>

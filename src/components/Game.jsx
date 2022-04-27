@@ -3,6 +3,8 @@ import pokedex from '../assets/pokedex.json';
 import React from 'react';
 import Row from './Row';
 import Guess from './Guess';
+import Finale from './Finale';
+import { toHaveAccessibleDescription } from '@testing-library/jest-dom/dist/matchers';
 
 
 class Game extends React.Component
@@ -10,26 +12,42 @@ class Game extends React.Component
     constructor(props) {
         super(props);
 
+        this.startNewGame = this.startNewGame.bind(this);
         this.handleGuess = this.handleGuess.bind(this);
+        this.handleWinCondition = this.handleWinCondition.bind(this);
+        this.handleLoseCondition = this.handleLoseCondition.bind(this);
 
         this.maxGuesses = 8;
 
-        this.state = {
+        this.defaultState = {
             pokemon: [],
             rows: [],
-            currentGuess: 1
-        };      
+            currentGuess: 1,
+            playing: (<Guess handleGuess={this.handleGuess} />)
+        };   
+        
+        this.state = this.defaultState;
     }
 
     componentDidMount() {
+        this.startNewGame();
+    }
+
+    startNewGame()
+    {
+
         let length = Object.keys(pokedex).length;
         let random = parseInt(Math.random() * length);
         let name = Object.keys(pokedex)[random];
         let pick = pokedex[name];
 
         this.setState({
-            pokemon: [name, pick]
+            pokemon: [name, pick],
+            rows: [],
+            currentGuess: 1,
+            playing: this.defaultState.playing
         });
+
 
     }
 
@@ -144,12 +162,16 @@ class Game extends React.Component
 
     handleWinCondition()
     {
-        console.log('YOU WIN!');
+        this.setState({
+            playing: (<Finale status='win' pokemon={this.state.pokemon} />)
+        });
     }
 
     handleLoseCondition()
     {
-        console.log('You Lost :(');
+        this.setState({
+            playing: (<Finale status='lose' pokemon={this.state.pokemon} newGame={this.startNewGame} />)
+        });
     }
 
 
@@ -158,7 +180,7 @@ class Game extends React.Component
         return (
             <div className="flex flex-col flex-1 items-center justify-start mt-3 w-fit">
                 <div>
-                    <Guess handleGuess={this.handleGuess} />
+                    { this.state.playing }
                 </div>
 
                 <div className="grid grid-flow-col w-full text-blue-200 mt-6">
