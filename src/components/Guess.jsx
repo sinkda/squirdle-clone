@@ -19,8 +19,13 @@ class Guess extends React.Component
         this.defaultState = {
             suggestions: null,
             autocompleteState: 'hidden',
-            outlineErrorState: 'outline-none'
+            outlineErrorState: 'outline-none outline-1 hover:outline-blue-200'          
         };
+
+        this.stateChanges = {
+            autocompleteState: 'flex',
+            outlineErrorState: 'outline outline-red-600 outline-2'
+        }
 
         this.state = this.defaultState;
     }
@@ -41,15 +46,14 @@ class Guess extends React.Component
         const suggestions = found.map((value, index) => {
              
             return (
-            <div key={index} className="flex flex-col border-b-2 border-b-slate-800 hover:bg-slate-200 hover:cursor-pointer overflow-y"
+            <div key={index} className="flex flex-col border-b-2 border-b-slate-800 hover:bg-slate-200 hover:cursor-pointer"
                     onClick={() => this.handleAutocompleteClick(value)}>
                 <div>
                     {reactStringReplace(value, criteria, (match, i) => (<span className="font-bold" key={i}>{match}</span>))}
                 </div>
-                <div className="text-sm grid grid-cols-3 mt-1">
+                <div className="text-xs grid grid-cols-2 p-1">
                     <div><span className="font-semibold">Gen:</span> {pokedex[value][0]}</div>
-                    <div><span className="font-semibold">Type 1:</span> {pokedex[value][1]}</div>
-                    <div><span className="font-semibold">Type 2:</span> {(pokedex[value][2] !== '') ? pokedex[value][2] : 'None'}</div>
+                    <div><span className="font-semibold">Type:</span> {pokedex[value][1]} / {(pokedex[value][2] !== '') ? pokedex[value][2] : 'None'}</div>
                     <div><span className="font-semibold">Height:</span> {pokedex[value][3]}</div>
                     <div><span className="font-semibold">Weight:</span> {pokedex[value][4]}</div>
                 </div>
@@ -67,13 +71,21 @@ class Guess extends React.Component
         this.inputRef.current.value = name;
 
         this.setState({
-            autocompleteState: 'hidden'
+            autocompleteState: this.defaultState.autocompleteState
         });
     }
 
     handleKeyPress(e)
     {
         let search = '';
+
+        // catch Enter for submit
+        if(e.keyCode === 13)
+        {
+            e.preventDefault();
+            this.handleGuess();
+            return;
+        }
 
         // Catch for non-alphabetical keys (like Backspace, Delete, etc.)
         if(e.keyCode >= 65 && e.keyCode <= 90)
@@ -83,7 +95,7 @@ class Guess extends React.Component
 
         if(search === '')
             this.setState({
-                autocompleteState: 'hidden'
+                autocompleteState: this.defaultState.autocompleteState
             });
         else
         {
@@ -91,7 +103,7 @@ class Guess extends React.Component
             this.populateSearch(found, search);
     
             this.setState({
-                autocompleteState: 'flex'
+                autocompleteState: this.stateChanges.autocompleteState
             });
         }
     }
@@ -101,7 +113,7 @@ class Guess extends React.Component
         if(!pokedex.hasOwnProperty(this.inputRef.current.value))
         {
             this.setState({
-                outlineErrorState: 'outline outline-red-600'
+                outlineErrorState: this.stateChanges.outlineErrorState
             });
 
             setTimeout(this.transitionGuessError, 3000);
@@ -117,22 +129,26 @@ class Guess extends React.Component
     transitionGuessError()
     {
         this.setState({
-            outlineErrorState: 'outline-none'
+            outlineErrorState: this.defaultState.outlineErrorState
         });
     }
 
     render() {
         return (
-            <div className="mt-6 relative">
-                <label htmlFor="guess" className="text-blue-200 text-lg">Guess a Pokemon</label>
-                <div className="flex flex-row items-center w-full h-full mt-2">
-                    <input type="text" onKeyDown={this.handleKeyPress} className={`p-2 ${this.state.outlineErrorState} outline-2 hover:outline-blue-200 transition duration-200 ease-in-out`} 
-                           name="guess" ref={this.inputRef} placeholder="Who's That Pokemon?" autoComplete="off"/>
-                    <button className='shadow-md bg-blue-400 hover:bg-blue-600 text-white rounded-r-xl p-1 h-11 transition-all duration-200 ease-in-out' onClick={this.handleGuess}>Guess!</button>
+            <div>
+                <div className="mt-6">
+                    <label htmlFor="guess" className="text-blue-200 text-lg">Guess a Pokemon</label>
+                    <div className="flex flex-row items-center w-full h-full mt-2">
+                        <input type="text" onKeyDown={this.handleKeyPress} className={`p-2 ${this.state.outlineErrorState} transition duration-200 ease-in-out`} 
+                            name="guess" ref={this.inputRef} placeholder="Who's That Pokemon?" autoComplete="off"/>
+                        <button className='shadow-md bg-blue-400 hover:bg-blue-600 text-white rounded-r-xl p-1 h-11 transition-all duration-200 ease-in-out' onClick={this.handleGuess}>Guess!</button>
+                    </div>
                 </div>
 
-                <div className={`absolute left-0 right-0 top-20 bg-white border-slate-900 flex-col ${this.state.autocompleteState} rounded`} ref={this.autocompleteRef}>
-                    { this.state.suggestions }
+                <div className="relative z-10">
+                    <div className={`absolute left-0 right-0 top-1 bg-white border-slate-900 flex-col ${this.state.autocompleteState} rounded`} ref={this.autocompleteRef}>
+                        { this.state.suggestions }
+                    </div>
                 </div>
             </div>
         );
