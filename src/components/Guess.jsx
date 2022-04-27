@@ -1,5 +1,5 @@
 import React from 'react';
-import reactStringReplace from 'react-string-replace';
+import Autocomplete from './Autocomplete';
 import pokedex from '../assets/pokedex.json';
 
 
@@ -15,64 +15,22 @@ class Guess extends React.Component
         this.transitionGuessError = this.transitionGuessError.bind(this);
 
         this.inputRef = React.createRef();
+        this.autoCompleteRef = React.createRef();
 
         this.defaultState = {
-            suggestions: null,
-            autocompleteState: 'hidden',
             outlineErrorState: 'outline-none outline-1 hover:outline-blue-200'          
         };
 
         this.stateChanges = {
-            autocompleteState: 'flex',
             outlineErrorState: 'outline outline-red-600 outline-2'
         }
 
         this.state = this.defaultState;
     }
 
-    searchPokemonByName(search)
-    {
-        let searchLimit = 5;
-
-        let found = Object.keys(pokedex).filter(element => element.toLowerCase().includes(search.toLowerCase()));
-
-        let output = found.slice(0, searchLimit);
-
-        return output;
-    }
-
-    populateSearch(found, criteria)
-    {   
-        const suggestions = found.map((value, index) => {
-             
-            return (
-            <div key={index} className="flex flex-col border-b-2 border-b-slate-800 hover:bg-slate-200 hover:cursor-pointer"
-                    onClick={() => this.handleAutocompleteClick(value)}>
-                <div>
-                    {reactStringReplace(value, criteria, (match, i) => (<span className="font-bold" key={i}>{match}</span>))}
-                </div>
-                <div className="text-xs grid grid-cols-2 p-1">
-                    <div><span className="font-semibold">Gen:</span> {pokedex[value][0]}</div>
-                    <div><span className="font-semibold">Type:</span> {pokedex[value][1]} / {(pokedex[value][2] !== '') ? pokedex[value][2] : 'None'}</div>
-                    <div><span className="font-semibold">Height:</span> {pokedex[value][3]}m</div>
-                    <div><span className="font-semibold">Weight:</span> {pokedex[value][4]}kg</div>
-                </div>
-            </div>
-            );
-        });
-
-        this.setState({
-            suggestions: suggestions
-        });
-    }
-
     handleAutocompleteClick(name)
     {
         this.inputRef.current.value = name;
-
-        this.setState({
-            autocompleteState: this.defaultState.autocompleteState
-        });
     }
 
     handleKeyPress(e)
@@ -93,19 +51,11 @@ class Guess extends React.Component
         else
             search = e.target.value;      
 
+        // TODO: Implement on Autocomplete
         if(search === '')
-            this.setState({
-                autocompleteState: this.defaultState.autocompleteState
-            });
+            this.autoCompleteRef.current.setAutocompleteState(false);
         else
-        {
-            let found = this.searchPokemonByName(search);
-            this.populateSearch(found, search);
-    
-            this.setState({
-                autocompleteState: this.stateChanges.autocompleteState
-            });
-        }
+            this.autoCompleteRef.current.searchPokemonByName(search);
     }
 
     handleGuess()
@@ -122,7 +72,9 @@ class Guess extends React.Component
 
         this.props.handleGuess(this.inputRef.current.value);
 
+        // TODO: IMplement on Autocomplete
         this.setState(this.defaultState);
+        this.autoCompleteRef.current.setAutocompleteState(false);
         this.inputRef.current.value = '';
     }
 
@@ -145,11 +97,7 @@ class Guess extends React.Component
                     </div>
                 </div>
 
-                <div className="relative z-10">
-                    <div className={`absolute left-0 right-0 top-1 bg-white border-slate-900 flex-col ${this.state.autocompleteState} rounded`} ref={this.autocompleteRef}>
-                        { this.state.suggestions }
-                    </div>
-                </div>
+                <Autocomplete ref={this.autoCompleteRef} handleAutocompleteClick={this.handleAutocompleteClick}/>
             </div>
         );
     }
