@@ -22,7 +22,7 @@ class Game extends React.Component
             pokemon: [],
             rows: [],
             currentGuess: 1,
-            playing: (<Guess handleGuess={this.handleGuess} />)
+            playing: (<Guess handleGuess={this.handleGuess} restartGame={this.startNewGame} />)
         };   
         
         this.state = this.defaultState;
@@ -241,8 +241,6 @@ class Game extends React.Component
                 <div>
                     { this.state.rows }
                 </div>
-
-                
             </div>
             );
     }

@@ -91,13 +91,18 @@ class Guess extends React.Component
                 <div className="mt-6">
                     <label htmlFor="guess" className="text-blue-200 text-lg block text-center">Guess a Pokemon</label>
                     <div className="flex flex-row items-center w-full h-full mt-2">
-                        <input type="text" onKeyDown={this.handleKeyPress} className={`p-2 ${this.state.outlineErrorState} transition duration-200 ease-in-out`} 
+                        <input type="text" onKeyDown={this.handleKeyPress} className={`p-2 ${this.state.outlineErrorState} transition duration-200 ease-in-out rounded-l-xl`} 
                             name="guess" ref={this.inputRef} placeholder="Who's That Pokemon?" autoComplete="off"/>
                         <button className='shadow-md bg-blue-400 hover:bg-blue-600 text-white rounded-r-xl p-1 h-11 transition-all duration-200 ease-in-out' onClick={this.handleGuess}>Guess!</button>
                     </div>
                 </div>
 
                 <Autocomplete ref={this.autoCompleteRef} handleAutocompleteClick={this.handleAutocompleteClick}/>
+
+                <div className="flex flex-row justify-center w-full">
+                    <button className="bg-blue-500 rounded-lg shadow-lg px-4 py-2 my-4 text-white hover:bg-blue-600 transition duration-200 ease-in-out" 
+                            onClick={() => this.props.restartGame()}>Restart Game</button>
+                </div>
             </div>
         );
     }
